@@ -1,5 +1,6 @@
 {
   "name": "reactjs-faq",
+  "description": "Dark-first React + JavaScript interview FAQ app with searchable accordion questions.",
   "private": true,
   "version": "0.0.0",
   "type": "module",

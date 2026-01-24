@@ -1,4 +1,4 @@
-# React + JavaScript Interview FAQ (Accordion)
+# React + JavaScript Interview FAQ
 
 A small, dark-first React app that showcases commonly asked React/JavaScript interview questions in a clean FAQ accordion format.
 

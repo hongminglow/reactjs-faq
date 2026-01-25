@@ -257,6 +257,42 @@ export const faqSections: FaqSection[] = [
         tags: ["reconciliation", "keys", "lists"],
       },
       {
+        id: "react-keys",
+        question: "What is the key prop in React, and how does it help rendering?",
+        answer:
+          "key is a special prop React uses during reconciliation for arrays of elements. It lets React identify which item is which across renders, so it can keep component state attached to the right list item and avoid unnecessary unmount/mount cycles. A good key is stable and unique for the item (typically an ID from your data). Avoid using array index as a key when the list can reorder, insert, or delete.",
+        tags: ["keys", "lists", "reconciliation", "render"],
+      },
+      {
+        id: "virtual-dom",
+        question:
+          "What is the Virtual DOM, and how does it help rendering (diffing + reconciliation steps)?",
+        answer:
+          "The Virtual DOM is a lightweight in-memory representation of what the UI should look like. Instead of mutating the real DOM directly as you write code, React computes a new virtual UI tree and then updates the real DOM efficiently. A practical high-level flow is: (1) Render phase: React runs your components and builds the next virtual tree. (2) Diffing: React compares the new tree with the previous tree, using element types and keys to match nodes. (3) Reconciliation: React decides what changed (insert/remove/update/move), and prepares the minimal set of mutations. (4) Commit phase: React applies those mutations to the real DOM. (5) Browser paints the updated UI. This helps because it batches work and reduces expensive DOM operations compared to naive per-change updates.",
+        tags: ["virtual dom", "diff", "reconciliation", "render"],
+      },
+      {
+        id: "pure-components",
+        question: "What is a PureComponent (and how does it relate to React.memo)?",
+        answer:
+          "React.PureComponent is a class component that implements a shallow comparison of props and state to skip re-rendering when nothing appears to change by reference. For function components, React.memo provides a similar optimization (shallow-compare props by default). Both require you to treat state/props as immutable—mutating objects in place can break the optimization and cause stale UI.",
+        tags: ["PureComponent", "React.memo", "performance", "immutability"],
+      },
+      {
+        id: "react-major-features",
+        question: "What are major features of React (as an interview answer)?",
+        answer:
+          "Commonly mentioned features: declarative UI (describe what you want, React updates it), component-based architecture (compose reusable pieces), one-way data flow (predictable updates), an efficient render/reconciliation model, a rich ecosystem (routing, data fetching, state), hooks for reusable logic, and strong tooling (DevTools, profiler). Depending on the role, you can also mention SSR/streaming and Suspense for coordinating loading states.",
+        tags: ["react", "features", "architecture"],
+      },
+      {
+        id: "portals",
+        question: "What is a portal in React and when would you use it?",
+        answer:
+          "A portal lets you render a React subtree into a different place in the DOM than its logical parent, while keeping React event handling and state management working as if it were still in the same component tree. It’s commonly used for modals, popovers, and tooltips to avoid CSS overflow/z-index issues (e.g., rendering under document.body).",
+        tags: ["portal", "ReactDOM.createPortal", "modals"],
+      },
+      {
         id: "effects",
         question: "How is useEffect different from useLayoutEffect?",
         answer:
@@ -399,6 +435,31 @@ export const faqSections: FaqSection[] = [
         answer:
           "Closures capture values from the render where they were created. If an effect/callback doesn’t update when values change, it can read stale data. Fix with correct dependencies, functional updates, or refs for mutable latest values.",
         tags: ["closures", "useEffect", "dependencies"],
+      },
+      {
+        id: "hoc",
+        question: "What is a Higher-Order Component (HOC)? Show a simple example.",
+        answer: `A Higher-Order Component is a function that takes a component and returns a new component with added behavior. It’s a pattern for reusing logic, historically common before hooks.
+
+Example (adds a loading UI):
+
+function withLoading<P>(Component: React.ComponentType<P>) {
+  return function WithLoading(props: P & { isLoading: boolean }) {
+    if (props.isLoading) return <div>Loading…</div>;
+    const { isLoading, ...rest } = props;
+    return <Component {...(rest as P)} />;
+  };
+}
+` ,
+        tags: ["hoc", "patterns", "composition"],
+      },
+      {
+        id: "hoc-vs-hooks-vs-render-props",
+        question:
+          "HOC vs Hooks vs Render Props: what's the difference (and when to use each)?",
+        answer:
+          "They’re all patterns for code reuse, but they compose differently. HOCs wrap a component (withX(Component)) and inject props/behavior; they can lead to wrapper nesting and prop collisions, but work well for cross-cutting concerns and are useful for older class components. Render props pass a function as a prop (e.g., <DataProvider>{(data) => ...}</DataProvider>) giving explicit control over rendering; it’s flexible but can create deep nesting and rerender frequently if not careful. Hooks let function components reuse stateful logic directly (useX()), generally the modern default: they keep component trees flatter and avoid wrapper hell, but hooks must follow the Rules of Hooks and can’t be called conditionally. In modern React, prefer hooks for reusable logic, use render props when the consumer needs full control over rendering, and use HOCs mainly for library integration, legacy class code, or when a wrapper component is the cleanest API.",
+        tags: ["hoc", "hooks", "render props", "patterns"],
       },
       {
         id: "use-reducer",

@@ -173,9 +173,33 @@
   gap: 8px;
 }
 
+.searchLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .searchLabel {
   font-size: 12px;
   color: var(--muted-2);
+}
+
+.searchShortcut {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted-2);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.searchInputWrap {
+  width: 100%;
 }
 
 .searchInput {
@@ -195,6 +219,7 @@
 .searchMeta {
   font-size: 12px;
   color: var(--muted-2);
+  line-height: 1.2;
 }
 
 .sections {
@@ -298,6 +323,27 @@ html[data-theme="dark"] .accItem {
   line-height: 1.6;
 }
 
+.accAnswer,
+.accTip {
+  margin: 0;
+}
+
+.accTip {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.accTipLabel {
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .empty {
   margin-top: 18px;
   padding: 22px 18px;
@@ -337,13 +383,18 @@ html[data-theme="dark"] .accItem {
   }
 
   .searchRow {
-    grid-template-columns: 1fr auto;
-    align-items: end;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 10px 12px;
   }
 
-  .searchLabel {
+  .searchLabelRow {
     grid-column: 1 / -1;
+  }
+
+  .searchMeta {
+    align-self: center;
+    white-space: nowrap;
   }
 }
 

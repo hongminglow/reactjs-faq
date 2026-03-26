@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Accordion } from "./components/Accordion";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { faqSections } from "./faqData";
@@ -18,6 +18,7 @@ function getInitialTheme(): Theme {
 function App() {
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const [query, setQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const [openBySection, setOpenBySection] = useState<
     Record<string, string | null>
@@ -34,6 +35,34 @@ function App() {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      const isSearchShortcut =
+        (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k";
+
+      if (!isSearchShortcut) return;
+
+      event.preventDefault();
+
+      const input = searchInputRef.current;
+      if (!input) return;
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      input.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
+      input.focus();
+      input.select();
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
+
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return faqSections;
@@ -42,7 +71,7 @@ function App() {
       .map((section) => {
         const items = section.items.filter((item) => {
           const hay =
-            `${item.question} ${item.answer} ${item.tags.join(" ")}`.toLowerCase();
+            `${item.question} ${item.answer} ${item.tip ?? ""} ${item.tags.join(" ")}`.toLowerCase();
           return hay.includes(q);
         });
         return { ...section, items };
@@ -96,18 +125,26 @@ function App() {
           </p>
 
           <div className="searchRow">
-            <label className="searchLabel" htmlFor="faq-search">
-              Search
-            </label>
-            <input
-              id="faq-search"
-              className="searchInput"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Try: event loop, gc, useEffect, workers, memo…"
-              autoComplete="off"
-              spellCheck={false}
-            />
+            <div className="searchLabelRow">
+              <label className="searchLabel" htmlFor="faq-search">
+                Search
+              </label>
+              <span className="searchShortcut" aria-hidden="true">
+                Ctrl+K
+              </span>
+            </div>
+            <div className="searchInputWrap">
+              <input
+                id="faq-search"
+                ref={searchInputRef}
+                className="searchInput"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Try: hydration, event loop, useEffect, workers, memo…"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </div>
             <div className="searchMeta" aria-live="polite">
               {query.trim()
                 ? `${totalMatches} match${totalMatches === 1 ? "" : "es"}`
@@ -141,6 +178,7 @@ function App() {
                     id: item.id,
                     header: item.question,
                     body: item.answer,
+                    tip: item.tip,
                   }))}
                   openItemId={openBySection[section.id] ?? null}
                   onToggle={(id) =>

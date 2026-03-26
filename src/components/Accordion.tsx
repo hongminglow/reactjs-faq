@@ -4,6 +4,7 @@ type AccordionItemData = {
   id: string;
   header: string;
   body: string;
+  tip?: string;
 };
 
 type AccordionProps = {
@@ -69,7 +70,15 @@ export function Accordion({ items, openItemId, onToggle }: AccordionProps) {
               hidden={!expanded}
               className="accPanel"
             >
-              <div className="accPanelInner">{item.body}</div>
+              <div className="accPanelInner">
+                <p className="accAnswer">{item.body}</p>
+                {item.tip ? (
+                  <p className="accTip">
+                    <span className="accTipLabel">Interview tip:</span>{" "}
+                    {item.tip}
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
         );

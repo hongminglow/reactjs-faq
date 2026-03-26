@@ -2,6 +2,7 @@ export type FaqItem = {
   id: string;
   question: string;
   answer: string;
+  tip?: string;
   tags: string[];
 };
 
@@ -258,7 +259,8 @@ export const faqSections: FaqSection[] = [
       },
       {
         id: "react-keys",
-        question: "What is the key prop in React, and how does it help rendering?",
+        question:
+          "What is the key prop in React, and how does it help rendering?",
         answer:
           "key is a special prop React uses during reconciliation for arrays of elements. It lets React identify which item is which across renders, so it can keep component state attached to the right list item and avoid unnecessary unmount/mount cycles. A good key is stable and unique for the item (typically an ID from your data). Avoid using array index as a key when the list can reorder, insert, or delete.",
         tags: ["keys", "lists", "reconciliation", "render"],
@@ -268,21 +270,24 @@ export const faqSections: FaqSection[] = [
         question:
           "What is the Virtual DOM, and how does it help rendering (diffing + reconciliation steps)?",
         answer:
-          "The Virtual DOM is a lightweight in-memory representation of what the UI should look like. Instead of mutating the real DOM directly as you write code, React computes a new virtual UI tree and then updates the real DOM efficiently. A practical high-level flow is: (1) Render phase: React runs your components and builds the next virtual tree. (2) Diffing: React compares the new tree with the previous tree, using element types and keys to match nodes. (3) Reconciliation: React decides what changed (insert/remove/update/move), and prepares the minimal set of mutations. (4) Commit phase: React applies those mutations to the real DOM. (5) Browser paints the updated UI. This helps because it batches work and reduces expensive DOM operations compared to naive per-change updates.",
+          "The Virtual DOM is React's in-memory description of the UI. On each render, React builds a new tree, compares it with the previous one, then commits only the needed DOM updates. The key idea is not 'virtual DOM is always faster' but that React can reason about updates efficiently and keep UI code declarative.",
+        tip:
+          "Avoid saying 'Virtual DOM makes React fast by itself.' The stronger answer is that React uses it to reason about updates and minimize unnecessary DOM work.",
         tags: ["virtual dom", "diff", "reconciliation", "render"],
       },
       {
         id: "pure-components",
-        question: "What is a PureComponent (and how does it relate to React.memo)?",
+        question:
+          "What is a PureComponent (and how does it relate to React.memo)?",
         answer:
-          "React.PureComponent is a class component that implements a shallow comparison of props and state to skip re-rendering when nothing appears to change by reference. For function components, React.memo provides a similar optimization (shallow-compare props by default). Both require you to treat state/props as immutable—mutating objects in place can break the optimization and cause stale UI.",
+          "React.PureComponent is the class-component version of shallow prop/state comparison. React.memo does the same idea for function components by shallow-comparing props. Both only help when your data is immutable and prop references stay stable.",
         tags: ["PureComponent", "React.memo", "performance", "immutability"],
       },
       {
         id: "react-major-features",
         question: "What are major features of React (as an interview answer)?",
         answer:
-          "Commonly mentioned features: declarative UI (describe what you want, React updates it), component-based architecture (compose reusable pieces), one-way data flow (predictable updates), an efficient render/reconciliation model, a rich ecosystem (routing, data fetching, state), hooks for reusable logic, and strong tooling (DevTools, profiler). Depending on the role, you can also mention SSR/streaming and Suspense for coordinating loading states.",
+          "A strong short answer is: declarative UI, component-based architecture, one-way data flow, reusable logic with hooks, and efficient updates through reconciliation. If the role is more advanced, also mention SSR/streaming, Suspense, and strong tooling.",
         tags: ["react", "features", "architecture"],
       },
       {
@@ -318,7 +323,7 @@ export const faqSections: FaqSection[] = [
         question:
           "Controlled vs uncontrolled form inputs: what’s the difference?",
         answer:
-          "Controlled inputs store the value in React state (onChange updates state). Uncontrolled inputs let the DOM hold the value (read via ref). Controlled is easier for validation; uncontrolled can be simpler and avoids rerenders for every keystroke.",
+          "Controlled inputs keep the value in React state; uncontrolled inputs keep it in the DOM and you read it with a ref. Controlled is better for validation and derived UI. Uncontrolled can be simpler for basic forms and is common for file inputs.",
         tags: ["forms", "controlled", "uncontrolled"],
       },
       {
@@ -361,7 +366,9 @@ export const faqSections: FaqSection[] = [
         id: "memo",
         question: "When should you use React.memo/useMemo/useCallback?",
         answer:
-          "Use them to reduce expensive recalculations or prevent avoidable re-renders when (1) you have measured a problem, and (2) props are stable enough to benefit. Overusing memoization can add complexity and even slow things down due to extra comparisons and memory overhead.",
+          "Use them when you've measured wasted work: React.memo to skip child renders, useMemo to cache expensive values, and useCallback to stabilize function references. Don't add them by default; they help only when reference stability or recomputation is actually the bottleneck.",
+        tip:
+          "A senior answer usually includes 'after profiling' and mentions that over-memoization adds complexity and can backfire.",
         tags: ["memo", "useMemo", "useCallback"],
       },
       {
@@ -401,10 +408,20 @@ export const faqSections: FaqSection[] = [
         tags: ["code splitting", "bundling", "performance"],
       },
       {
+        id: "core-web-vitals",
+        question:
+          "What are Core Web Vitals, and how would you improve them in a real app?",
+        answer:
+          "Core Web Vitals are LCP for loading, INP for responsiveness, and CLS for visual stability. Improve them by shipping less JS, optimizing images/fonts, prioritizing above-the-fold content, reserving layout space, and reducing long main-thread work.",
+        tip:
+          "Interviewers like hearing one concrete fix per metric: image and render-path work for LCP, less blocking JS for INP, reserved space for CLS.",
+        tags: ["core web vitals", "lcp", "inp", "cls", "performance"],
+      },
+      {
         id: "suspense",
         question: "What is Suspense used for (conceptually)?",
         answer:
-          "Suspense lets a component 'wait' and show fallback UI while something is loading (like code-split chunks). It helps coordinate loading states in a structured way.",
+          "Suspense lets React show fallback UI while part of the tree is waiting on async work, such as lazy-loaded code or framework-managed data. It coordinates loading states, but Suspense itself is not a data-fetching library.",
         tags: ["Suspense", "loading"],
       },
       {
@@ -438,8 +455,9 @@ export const faqSections: FaqSection[] = [
       },
       {
         id: "hoc",
-        question: "What is a Higher-Order Component (HOC)? Show a simple example.",
-        answer: `A Higher-Order Component is a function that takes a component and returns a new component with added behavior. It’s a pattern for reusing logic, historically common before hooks.
+        question:
+          "What is a Higher-Order Component (HOC)? Show a simple example.",
+        answer: `A Higher-Order Component is a function that takes a component and returns a new component with extra behavior. It's an older reuse pattern that you still see in some libraries and class-based code.
 
 Example (adds a loading UI):
 
@@ -450,7 +468,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
     return <Component {...(rest as P)} />;
   };
 }
-` ,
+`,
         tags: ["hoc", "patterns", "composition"],
       },
       {
@@ -458,7 +476,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         question:
           "HOC vs Hooks vs Render Props: what's the difference (and when to use each)?",
         answer:
-          "They’re all patterns for code reuse, but they compose differently. HOCs wrap a component (withX(Component)) and inject props/behavior; they can lead to wrapper nesting and prop collisions, but work well for cross-cutting concerns and are useful for older class components. Render props pass a function as a prop (e.g., <DataProvider>{(data) => ...}</DataProvider>) giving explicit control over rendering; it’s flexible but can create deep nesting and rerender frequently if not careful. Hooks let function components reuse stateful logic directly (useX()), generally the modern default: they keep component trees flatter and avoid wrapper hell, but hooks must follow the Rules of Hooks and can’t be called conditionally. In modern React, prefer hooks for reusable logic, use render props when the consumer needs full control over rendering, and use HOCs mainly for library integration, legacy class code, or when a wrapper component is the cleanest API.",
+          "All three reuse logic, but in different ways. HOCs wrap components, render props pass a function to control rendering, and hooks reuse logic directly inside function components. Today, hooks are usually the default; render props are useful when the caller needs render control, and HOCs are mostly for legacy or library integration.",
         tags: ["hoc", "hooks", "render props", "patterns"],
       },
       {
@@ -500,7 +518,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         id: "use-id",
         question: "What is useId used for?",
         answer:
-          "useId generates stable unique IDs for accessibility attributes (label/controls relationships). It helps avoid ID collisions across components.",
+          "useId generates stable IDs for accessibility relationships like label/input and aria-describedby. It's for accessibility, not for React list keys.",
         tags: ["useId", "a11y"],
       },
     ],
@@ -529,8 +547,29 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         id: "client-vs-server-state",
         question: "Client state vs server state: what’s the difference?",
         answer:
-          "Client state is purely UI/local (modals, filters). Server state is remote data that must be fetched, cached, invalidated, and kept in sync. Treating server state like local state often causes stale data bugs.",
+          "Client state is local UI state like modals or input text. Server state is remote data that needs fetching, caching, invalidation, and refetching. Treating server state like plain local state often leads to stale or duplicated data bugs.",
+        tip:
+          "A strong practical example is 'modal open state is client state; fetched users list is server state.'",
         tags: ["state", "caching", "data fetching"],
+      },
+      {
+        id: "csr-ssr-ssg",
+        question:
+          "CSR vs SSR vs SSG: how would you explain the tradeoffs in an interview?",
+        answer:
+          "CSR renders in the browser after JS loads, so it can be simpler but weaker for first load and SEO. SSR renders HTML per request, which improves initial render and SEO but adds server cost and hydration complexity. SSG builds pages ahead of time, which is fast and cheap for stable content but less flexible for highly dynamic pages.",
+        tip:
+          "The clearest structure is to compare them on first load, SEO, infrastructure cost, and how often the content changes.",
+        tags: ["csr", "ssr", "ssg", "rendering strategy"],
+      },
+      {
+        id: "hydration",
+        question: "What is hydration, and why do hydration mismatches happen?",
+        answer:
+          "Hydration is when React attaches client logic to server-rendered HTML. Mismatches happen when the client's first render differs from the server output, often because of dates, random values, browser-only APIs, or changing data. The fix is to keep the first render deterministic and defer client-only differences until after mount.",
+        tip:
+          "A good example is rendering a timestamp or reading localStorage during the first client render. Both can create a mismatch.",
+        tags: ["hydration", "ssr", "rendering"],
       },
       {
         id: "error-boundary",
@@ -543,8 +582,75 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         id: "optimistic-updates",
         question: "What are optimistic updates and what can go wrong?",
         answer:
-          "You update UI immediately before the server confirms, then reconcile later. It improves UX but requires rollback on failure and careful handling of race conditions and ordering.",
+          "Optimistic updates show the success state before the server confirms. They improve perceived speed, but you need rollback logic and must handle failures, races, and out-of-order responses carefully.",
         tags: ["ux", "data", "optimistic"],
+      },
+      {
+        id: "request-race-conditions",
+        question:
+          "How do race conditions happen in frontend data fetching, and how do you prevent them?",
+        answer:
+          "Race conditions happen when multiple requests for the same view resolve out of order, so an older response overwrites newer UI. Common fixes are canceling stale requests with AbortController, tracking request IDs, ignoring outdated responses in effects, and relying on a server-state library that handles caching and deduping.",
+        tip:
+          "Autocomplete or fast tab switching is the easiest example: the older request finishes last and incorrectly wins unless you cancel or ignore it.",
+        tags: ["race conditions", "fetch", "AbortController", "async"],
+      },
+    ],
+  },
+  {
+    id: "css-layout",
+    title: "CSS, Layout & UI Engineering",
+    description:
+      "Frontend interview topics beyond React: layout, stacking, responsiveness, and rendering stability.",
+    items: [
+      {
+        id: "browser-rendering-pipeline",
+        question:
+          "How does the browser turn HTML/CSS/JS into pixels on the screen?",
+        answer:
+          "At a high level: parse HTML into the DOM, parse CSS into the CSSOM, build the render tree, run layout, paint, then composite layers. JavaScript can interrupt this pipeline, which is why forced layout and long tasks hurt performance.",
+        tags: ["rendering", "dom", "cssom", "layout", "paint"],
+      },
+      {
+        id: "flexbox-vs-grid",
+        question: "When should you use Flexbox vs CSS Grid?",
+        answer:
+          "Use Flexbox for one-dimensional layout, like aligning items in a row or column. Use Grid for two-dimensional layout, where rows and columns both matter. A common real-world pattern is Grid for page layout and Flexbox inside components.",
+        tags: ["css", "flexbox", "grid", "layout"],
+      },
+      {
+        id: "stacking-context",
+        question:
+          "Why does z-index sometimes 'not work', and what is a stacking context?",
+        answer:
+          "z-index only works within the same stacking context. Properties like positioned elements with z-index, transform, and opacity can create new stacking contexts. A child cannot escape its parent's stacking context, so debugging usually means finding which ancestor created it.",
+        tip:
+          "If you want to sound practical, mention one trigger like transform or opacity and say you would inspect ancestors in DevTools.",
+        tags: ["css", "z-index", "stacking context", "layout"],
+      },
+      {
+        id: "layout-shift",
+        question:
+          "What causes layout shift in the UI, and how do you reduce it?",
+        answer:
+          "Layout shift happens when visible elements move unexpectedly after first render, often because images, ads, fonts, or async content change size late. Reduce it by reserving space with explicit dimensions or aspect-ratio, avoiding inserting content above existing content, and loading fonts in a way that minimizes reflow.",
+        tags: ["cls", "layout shift", "performance", "css"],
+      },
+      {
+        id: "responsive-strategy",
+        question:
+          "Media queries vs container queries: what problem does each solve?",
+        answer:
+          "Media queries respond to the viewport, so they fit page-level breakpoints. Container queries respond to a component's parent size, so they are better for reusable components that appear in different layouts. For design systems, container queries are often the more scalable answer.",
+        tags: ["css", "responsive", "media queries", "container queries"],
+      },
+      {
+        id: "semantic-html",
+        question:
+          "Why does semantic HTML still matter if you can style any element anyway?",
+        answer:
+          "Semantic HTML gives you built-in accessibility, expected keyboard behavior, and clearer meaning for browsers and assistive tech. For example, a real button already supports focus and keyboard activation; a styled div does not.",
+        tags: ["html", "semantic html", "a11y", "frontend"],
       },
     ],
   },
@@ -566,6 +672,8 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         question: "What is XSS and how does React reduce it?",
         answer:
           "XSS is injecting scripts into a page. React escapes text by default, reducing injection risk. Risk increases when inserting raw HTML (dangerouslySetInnerHTML) or trusting unvalidated input.",
+        tip:
+          "The important nuance is that React helps by escaping text, but it does not make unsafe HTML or unsanitized data safe automatically.",
         tags: ["xss", "security", "react"],
       },
       {
@@ -601,7 +709,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         id: "a11y",
         question: "What are a few must-have accessibility practices?",
         answer:
-          "Use semantic HTML, ensure keyboard navigation + visible focus, label inputs, use aria attributes only when needed, and keep color contrast sufficient. Accessibility is part of quality, not a 'nice-to-have'.",
+          "Use semantic HTML, support keyboard navigation with visible focus, label form controls, use ARIA only when native HTML is not enough, and keep color contrast readable. Accessibility should be part of the default quality bar.",
         tags: ["a11y", "aria", "ux"],
       },
     ],

@@ -111,7 +111,7 @@ export const faqSections: FaqSection[] = [
         id: "closures",
         question: "What is a closure and why does it matter?",
         answer:
-          "A closure is when a function keeps access to variables from its lexical scope even after the outer function returns. Closures power callbacks, module patterns, and hooks — but can also retain memory if you capture large objects.",
+          "A closure is when a function remembers variables from its outer scope even after that outer function has finished. Example: if createCounter returns a function that increments count, the inner function still remembers count on later calls. Closures power callbacks, private state, and many React patterns.",
         tags: ["closures", "scope", "memory"],
       },
       {

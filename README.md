@@ -4,10 +4,16 @@ A small, dark-first React app that showcases commonly asked frontend interview q
 
 ## What you get
 
-- Grouped sections (runtime/concurrency, React core, CSS/layout, browser platform, performance, TypeScript)
+- Grouped sections (JavaScript runtime, JavaScript language, React core, CSS/layout, browser platform, performance, TypeScript)
 - Click-to-expand accordion answers (accessible: `aria-expanded`, `aria-controls`)
 - Fast search across questions + answers + tags
 - Theme toggle (dark by default, light supported) with `localStorage` persistence
+
+## Example categories
+
+- `JavaScript Language Deep Dive`: closures, hoisting, prototypes, coercion, and DOM events
+- `React Core Concepts`: rendering, reconciliation, keys, state, and effects
+- `CSS, Layout & UI Engineering`: Flexbox vs Grid, stacking context, layout shift, and responsive strategy
 
 ## Run locally
 

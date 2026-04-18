@@ -67,6 +67,24 @@
   place-items: center;
 }
 
+html[data-theme="light"] .brandMark {
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(212, 175, 55, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      rgba(3, 105, 161, 0.1),
+      transparent 55%
+    ),
+    rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.15),
+    0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
 .brandDot {
   width: 10px;
   height: 10px;

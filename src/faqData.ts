@@ -76,6 +76,7 @@ export const faqSections: FaqSection[] = [
         question: "What is a long task and how do you fix UI jank?",
         answer:
           "A long task is main-thread work that blocks input and paints (often >50ms). Fix by splitting work into chunks, deferring non-urgent work, reducing allocations, virtualizing lists, or moving CPU-heavy work into a Worker.",
+        tip: "A blocked main thread ruins interactive feel. Even while deferring work, ensure UI elements have clear cursor states (cursor-pointer) and smooth, stable transitions (150-300ms) so the app still feels high-quality during recovery.",
         tags: ["performance", "main thread", "long task"],
       },
       {
@@ -295,6 +296,7 @@ export const faqSections: FaqSection[] = [
         question: "What is a portal in React and when would you use it?",
         answer:
           "A portal lets you render a React subtree into a different place in the DOM than its logical parent, while keeping React event handling and state management working as if it were still in the same component tree. It’s commonly used for modals, popovers, and tooltips to avoid CSS overflow/z-index issues (e.g., rendering under document.body).",
+        tip: "For portals like floating modals, remember floating/glass elements in light mode should use higher opacities (e.g. bg-white/80 or higher) so they don't look unprofessionally transparent, and always include a visible focus trap for keyboard navigation.",
         tags: ["portal", "ReactDOM.createPortal", "modals"],
       },
       {
@@ -324,6 +326,7 @@ export const faqSections: FaqSection[] = [
           "Controlled vs uncontrolled form inputs: what’s the difference?",
         answer:
           "Controlled inputs keep the value in React state; uncontrolled inputs keep it in the DOM and you read it with a ref. Controlled is better for validation and derived UI. Uncontrolled can be simpler for basic forms and is common for file inputs.",
+        tip: "From a UX perspective, regardless of controlled or uncontrolled, form inputs must implement semantic labels, provide visible focus states, avoid color as the sole indicator of validation errors, and respect OS-level 'prefers-reduced-motion'.",
         tags: ["forms", "controlled", "uncontrolled"],
       },
       {
@@ -616,6 +619,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
         question: "When should you use Flexbox vs CSS Grid?",
         answer:
           "Use Flexbox for one-dimensional layout, like aligning items in a row or column. Use Grid for two-dimensional layout, where rows and columns both matter. A common real-world pattern is Grid for page layout and Flexbox inside components.",
+        tip: "To maintain a premium layout, match Flexbox/Grid with consistent max-widths (e.g., max-w-6xl). Also, ensure your floating elements (like navbars) have proper edge spacing (top-4 left-4), rather than sticking rigidly to screen bounds.",
         tags: ["css", "flexbox", "grid", "layout"],
       },
       {
@@ -634,6 +638,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
           "What causes layout shift in the UI, and how do you reduce it?",
         answer:
           "Layout shift happens when visible elements move unexpectedly after first render, often because images, ads, fonts, or async content change size late. Reduce it by reserving space with explicit dimensions or aspect-ratio, avoiding inserting content above existing content, and loading fonts in a way that minimizes reflow.",
+        tip: "Interactive layout shift is a major red flag for professionalism: ensure hover effects use color/opacity transitions instead of structural block scaling or transform properties that push neighboring content.",
         tags: ["cls", "layout shift", "performance", "css"],
       },
       {
@@ -650,6 +655,7 @@ function withLoading<P>(Component: React.ComponentType<P>) {
           "Why does semantic HTML still matter if you can style any element anyway?",
         answer:
           "Semantic HTML gives you built-in accessibility, expected keyboard behavior, and clearer meaning for browsers and assistive tech. For example, a real button already supports focus and keyboard activation; a styled div does not.",
+        tip: "Along with semantic tags, visually represent meaning correctly: avoid using emojis as UI icons; opt for crisp, consistent SVGs with fixed 24x24 viewBoxes. Ensure light mode text contrast remains strong (using #0F172A or #475569).",
         tags: ["html", "semantic html", "a11y", "frontend"],
       },
     ],

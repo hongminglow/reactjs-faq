@@ -74,7 +74,7 @@ export function Accordion({ items, openItemId, onToggle }: AccordionProps) {
                 <p className="accAnswer">{item.body}</p>
                 {item.tip ? (
                   <p className="accTip">
-                    <span className="accTipLabel">Interview tip:</span>{" "}
+                    <span className="accTipLabel">Tip:</span>{" "}
                     {item.tip}
                   </p>
                 ) : null}
